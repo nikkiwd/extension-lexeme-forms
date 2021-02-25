@@ -1,0 +1,17 @@
+{
+	"manifest_version": 2,
+	"name": "Wikidata Lexeme Form Generator",
+	"version": "0.1",
+
+	"description": "Adds buttons on Wikidata Lexeme Forms pages to attempt to generate missing forms.",
+
+	"content_scripts": [
+		{
+			"matches": ["*://lexeme-forms.toolforge.org/*"],
+			"js": [
+				"jquery-3.5.1.slim.js",
+				"form-generator.js"
+			]
+		}
+	]
+}
