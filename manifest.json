@@ -1,7 +1,7 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Wikidata Lexeme Form Generator",
-	"version": "0.1",
+	"version": "0.2",
 
 	"description": "Adds buttons on Wikidata Lexeme Forms pages to attempt to generate missing forms.",
 
