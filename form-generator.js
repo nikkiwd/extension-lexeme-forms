@@ -1,4 +1,9 @@
+let container;
+
 function create_button(func, text, title="") {
+	if (!container)
+		create_container();
+
 	let button = document.createElement("button");
 	button.setAttribute("type", "button");
 	button.setAttribute("title", title);
@@ -6,7 +11,7 @@ function create_button(func, text, title="") {
 	button.style.marginLeft = "5px";
 	button.textContent = text;
 
-	document.querySelector("main .generate").insertAdjacentElement("beforeend", button);
+	container.insertAdjacentElement("beforeend", button);
 
 	button.addEventListener("click", func);
 }
@@ -382,34 +387,28 @@ function german_verb() {
 /***********************************************************************************/
 
 if (document.location.pathname.endsWith("/english-adjective/") || document.location.pathname.match("/english-adjective/edit/")) {
-	create_container();
 	create_button(english_adjective, "guess forms");
 }
 
 if (document.location.pathname.endsWith("/english-noun/") || document.location.pathname.match("/english-noun/edit/")) {
-	create_container();
 	create_button(english_noun, "guess forms");
 }
 
 if (document.location.pathname.endsWith("/esperanto-noun/") || document.location.pathname.match("/esperanto-noun/edit/")) {
-	create_container();
 	create_button(esperanto_noun, "generate forms");
 }
 
 if (document.location.pathname.endsWith("/esperanto-verb/") || document.location.pathname.match("/esperanto-verb/edit/")) {
-	create_container();
 	create_button(esperanto_verb, "generate forms");
 }
 
 if (document.location.pathname.endsWith("/german-noun-feminine/") || document.location.pathname.match("/german-noun-feminine/edit/")) {
-	create_container();
 	create_button(german_noun_f_en, "-en");
 	create_button(german_noun_f_e, "-¨e", "-/-¨e, -e, -er/-¨er, -sal/-sale, -nis/-nisse, -a/-en");
 	create_button(german_noun_f_s, "-s");
 }
 
 if (document.location.pathname.endsWith("/german-noun-masculine/") || document.location.pathname.match("/german-noun-masculine/edit/")) {
-	create_container();
 	create_button(german_noun_mn_n, "-s/-n");
 	create_button(german_noun_mn_s, "-s/-s");
 	create_button(german_noun_mn_umlaut_er, "-(e)s-/¨er");
@@ -417,7 +416,6 @@ if (document.location.pathname.endsWith("/german-noun-masculine/") || document.l
 }
 
 if (document.location.pathname.endsWith("/german-noun-neuter/") || document.location.pathname.match("/german-noun-neuter/edit/")) {
-	create_container();
 	create_button(german_noun_mn_umlaut_er, "-(e)s-/¨er")
 	create_button(german_noun_n_e, "-s/-e");
 	create_button(german_noun_mn_s, "-s/-s");
@@ -426,7 +424,6 @@ if (document.location.pathname.endsWith("/german-noun-neuter/") || document.loca
 }
 
 if (document.location.pathname.endsWith("/german-verb/") || document.location.pathname.match("/german-verb/edit/")) {
-	create_container();
 	create_button(german_verb, "guess forms");
 }
 
