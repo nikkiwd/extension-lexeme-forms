@@ -1,23 +1,31 @@
 function create_button(func, text, title="") {
-	$(
-		"<button type=\"button\" class=\"btn btn-outline-info\" style=\"margin-left:5px\" title=\""+ title +"\">"
-		+ text
-		+ "</button>"
-	).on("click", func).appendTo("main .generate");
+	let button = document.createElement("button");
+	button.setAttribute("type", "button");
+	button.setAttribute("title", title);
+	button.className = "btn btn-outline-info";
+	button.style.marginLeft = "5px";
+	button.textContent = text;
+
+	document.querySelector("main .generate").insertAdjacentElement("beforeend", button);
+
+	button.addEventListener("click", func);
 }
 
 function create_container() {
-	$("main").prepend("<div class=\"generate\" style=\"float:right\"></div>");
+	container = document.createElement("div");
+	container.className = "generate";
+	container.style.float = "right";
+	document.getElementsByTagName("main")[0].insertAdjacentElement("afterbegin", container);
 }
 
 function get_fields() {
-	let fields = $("main form input[name='form_representation']");
+	let fields = document.querySelectorAll("main form input[name='form_representation']");
 	let word = fields[0].value;
 
 	// If the first form is empty, get the word from the lemma
 	// Only applies to the edit page
-	if (!word && $("h2 span").length)
-		word = $("h2 span").text();
+	if (!word && document.querySelector("h2 span"))
+		word = document.querySelector("h2 span").textContent;
 
 	return [fields, word];
 }

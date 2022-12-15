@@ -9,7 +9,6 @@
 		{
 			"matches": ["*://lexeme-forms.toolforge.org/*"],
 			"js": [
-				"jquery-3.5.1.slim.js",
 				"form-generator.js"
 			]
 		}
