@@ -2,7 +2,7 @@ function english_adjective(lemma) {
 	if (!lemma)
 		return [];
 
-	let stem = lemma;
+	let stem = lemma.replace(/(?<=[^aeiou])y$/, "i");
 
 	if (!stem.endsWith("e"))
 		stem = stem + "e";
@@ -18,9 +18,9 @@ function english_noun(lemma) {
 	if (!lemma)
 		return [];
 
-	let stem = lemma;
+	let stem = lemma.replace(/(?<=[^aeiou])y$/, "ie");
 
-	if (stem.match(/(s|z|ch|sh)$/))
+	if (stem.match(/([sxz]|ch|sh)$/))
 		stem = stem + "e";
 
 	return [
