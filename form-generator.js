@@ -360,12 +360,13 @@ function german_verb(lemma) {
 	}
 
 	let pres = stem + "e";
-	let past = stem + (stem.match(/[dt]$/) ? "ete" : "te");
+	let past = stem + (stem.match(/([dt]|[^aeiouäöühlr]m)$/) ? "ete" : "te");
 	let con1 = pres;
 	let con2 = past + (past.endsWith("e") ? "" : "e");
 
 	let imp = pres;
-	imp = imp.replace(/e$/, "/") + imp;
+	if (!stem.match(/([^aeiouäöühlr]m)$/))
+		imp = imp.replace(/e$/, "/") + imp;
 
 	return [
 		inf,
@@ -381,7 +382,7 @@ function german_verb(lemma) {
 		past + "st",
 		past,
 		past + (past.match(/(e[lr]|e)$/) ? "n" : "en"),
-		past + (stem.match(/[dt]$/) ? "-et" : "t"),
+		past + "t",
 		past + (past.match(/(e[lr]|e)$/) ? "n" : "en"),
 
 		con1,
@@ -402,7 +403,8 @@ function german_verb(lemma) {
 		stem + p3suffix,
 
 		inf + "d",
-		(stem.match(/^(be|emp|ent|er|ge|miss|ver|zer)/) ? "" : "ge") + stem + p3suffix,
+		(stem.match(/^(be|emp|ent|er|ge|miss|ver|zer)/) || inf.endsWith("ieren") ? "" : "ge") + stem + p3suffix,
+
 	];
 
 	// detect irregular forms and use -en here?
