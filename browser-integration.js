@@ -57,18 +57,6 @@ function create_container() {
 	document.getElementsByTagName("main")[0].insertAdjacentElement("afterbegin", container);
 }
 
-function get_fields() {
-	let fields = document.querySelectorAll("main form input[name='form_representation']");
-	let word = fields[0].value;
-
-	// If the first form is empty, get the word from the lemma
-	// Only applies to the edit page
-	if (!word && document.querySelector("h2 span"))
-		word = document.querySelector("h2 span").textContent;
-
-	return [fields, word];
-}
-
 /***********************************************************************************/
 
 if (document.location.pathname.endsWith("/english-adjective/") || document.location.pathname.match("/english-adjective/edit/")) {
