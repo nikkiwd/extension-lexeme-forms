@@ -1,142 +1,104 @@
-let container;
+function english_adjective(lemma) {
+	if (!lemma)
+		return [];
 
-function create_button(func, text, title="") {
-	if (!container)
-		create_container();
+	let stem = lemma;
 
-	let button = document.createElement("button");
-	button.setAttribute("type", "button");
-	button.setAttribute("title", title);
-	button.className = "btn btn-outline-info";
-	button.style.marginLeft = "5px";
-	button.textContent = text;
+	if (!stem.endsWith("e"))
+		stem = stem + "e";
 
-	container.insertAdjacentElement("beforeend", button);
-
-	button.addEventListener("click", func);
+	return [
+		lemma,
+		stem + "r",
+		stem + "st",
+	];
 }
 
-function create_container() {
-	container = document.createElement("div");
-	container.className = "generate";
-	container.style.float = "right";
-	document.getElementsByTagName("main")[0].insertAdjacentElement("afterbegin", container);
-}
+function english_noun(lemma) {
+	if (!lemma)
+		return [];
 
-function get_fields() {
-	let fields = document.querySelectorAll("main form input[name='form_representation']");
-	let word = fields[0].value;
+	let stem = lemma;
 
-	// If the first form is empty, get the word from the lemma
-	// Only applies to the edit page
-	if (!word && document.querySelector("h2 span"))
-		word = document.querySelector("h2 span").textContent;
+	if (stem.match(/(s|z|ch|sh)$/))
+		stem = stem + "e";
 
-	return [fields, word];
+	return [
+		lemma,
+		stem + "s",
+	];
 }
 
 /*****************************************************************************/
 
-function english_adjective() {
-	let [fields, word] = get_fields();
+function esperanto_noun(lemma) {
+	if (!lemma)
+		return [];
 
-	if (!word)
-		return;
+	if (!lemma.endsWith("o"))
+		return []; // Esperanto nouns should end with -o
 
-	let e = word.endsWith("e") ? "" : "e";
-
-	fields[0].value = fields[0]?.value || word;
-	fields[1].value = fields[1]?.value || word + e + "r";
-	fields[2].value = fields[2]?.value || word + e + "st";
+	return [
+		lemma,
+		lemma + "n",
+		lemma + "j",
+		lemma + "jn",
+	];
 }
 
-function english_noun() {
-	let [fields, word] = get_fields();
+function esperanto_verb(lemma) {
+	if (!lemma)
+		return [];
 
-	if (!word)
-		return;
+	if (!lemma.endsWith("i"))
+		return []; // Esperanto verbs should end with -i
 
-	let pl = word.match(/(s|z|ch|sh)$/) ? "es" : "s";
+	let stem = lemma.replace(/i$/, "");
 
-	fields[0].value = fields[0]?.value || word;
-	fields[1].value = fields[1]?.value || word + pl;
-}
-
-/*****************************************************************************/
-
-function esperanto_noun() {
-	let [fields, word] = get_fields();
-
-	if (!word)
-		return;
-
-	if (!word.endsWith("o"))
-		return; // Esperanto nouns should end with -o
-
-	fields[0].value = fields[0]?.value || word;
-	fields[1].value = fields[1]?.value || word + "n";
-	fields[2].value = fields[2]?.value || word + "j";
-	fields[3].value = fields[3]?.value || word + "jn";
-}
-
-function esperanto_verb() {
-	let [fields, word] = get_fields();
-
-	if (!word)
-		return;
-
-	if (!word.endsWith("i"))
-		return; // Esperanto verbs should end with -i
-
-	let stem = word.replace(/i$/, "");
-
-	fields[0].value = fields[0]?.value || word;
-	fields[1].value = fields[1]?.value || stem + "as";
-	fields[2].value = fields[2]?.value || stem + "is";
-	fields[3].value = fields[3]?.value || stem + "os";
-	fields[4].value = fields[4]?.value || stem + "us";
-	fields[5].value = fields[5]?.value || stem + "u";
+	return [
+		lemma,
+		stem + "as",
+		stem + "is",
+		stem + "os",
+		stem + "us",
+		stem + "u",
+	];
 }
 
 /*****************************************************************************/
 
-function german_noun_f_en() {
-	let [fields, word] = get_fields();
+function german_noun_f_en(lemma) {
+	if (!lemma)
+		return [];
 
-	if (!word)
-		return;
+	let pl = lemma.replace(/in$/, "innen");
 
-	for (const k of [0, 1, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
+	if (lemma === pl)
+		pl = lemma.replace(/(e[lr])$/, "$1n");
 
-	let pl = word.replace(/in$/, "innen");
+	if (lemma === pl)
+		pl = lemma.replace(/e?$/, "en");
 
-	if (word === pl)
-		pl = word.replace(/(e[lr])$/, "$1n");
+	if (lemma === pl)
+		return []; // failed to edit lemma
 
-	if (word === pl)
-		pl = word.replace(/e?$/, "en");
-
-	if (word === pl)
-		return; // failed to edit word
-
-	for (const k of [4, 5, 6, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	return [
+		lemma,
+		lemma,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		pl,
+		pl,
+	];
 }
 
-function german_noun_f_e() {
-	let [fields, word] = get_fields();
+function german_noun_f_e(lemma) {
+	if (!lemma)
+		return [];
 
-	if (!word)
-		return;
-
-	for (const k of [0, 1, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
-
-	let pl = word
+	let pl = lemma
 		.replace(/sal$/, "sale")
 		.replace(/nis$/, "nisse")
 
@@ -151,180 +113,220 @@ function german_noun_f_e() {
 		.replace(/([^aeiouäöü])u([^aeiouäöü]+er)$/, "$1ü$2")
 		.replace(/([^aeiouäöü])au([^aeiouäöü]+er)$/, "$1äu$2")
 
+		.replace(/^Aa?([^aeiouäöü]+er)$/, "Ä$1")
+		.replace(/^O([^aeiouäöü]+er)$/, "Ö$1")
+		.replace(/^U([^aeiouäöü]+er)$/, "Ü$1")
+
 		.replace(/a$/, "en")
 	;
 
-	if (word === pl)
-		return; // failed to parse word
+	if (lemma === pl)
+		return []; // failed to parse lemma
 
-	for (const k of [4, 5, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	let datpl = pl + (pl.endsWith("n") ? "" : "n");
 
-	if (!fields[6].value)
-		fields[6].value = pl + (pl.endsWith("n") ? "" : "n");
+	return [
+		lemma,
+		lemma,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		datpl,
+		pl,
+	];
 }
 
-function german_noun_f_s() {
-	let [fields, word] = get_fields();
+function german_noun_f_s(lemma) {
+	if (!lemma)
+		return [];
 
-	if (!word)
-		return;
+	if (lemma.match(/[szß]$/))
+		return []; // what should happen for lemmas ending in -s already?
 
-	if (word.match(/[szß]$/))
-		return; // what should happen for words ending in -s already?
+	let pl = lemma + "s";
 
-	for (const k of [0, 1, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
-
-	for (const k of [4, 5, 6, 7]) {
-		fields[k].value = fields[k]?.value || word + "s";
-	}
+	return [
+		lemma,
+		lemma,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		pl,
+		pl,
+	];
 }
 
 /*****************************************************************************/
 
-function german_noun_mn_n() {
-	let [fields, word] = get_fields();
+function german_noun_mn_n(lemma) {
+	if (!lemma)
+		return [];
 
-	for (const k of [0, 2, 3, 4, 5, 7]) {
-		fields[k].value = fields[k]?.value || word;
-	}
+	let gensg = lemma + "s";
+	let datpl = lemma + (lemma.endsWith("n") ? "" : lemma.match(/e[lr]?$/) ? "n" : "en");
 
-	fields[1].value = fields[1]?.value || word + "s";
-
-	if (!fields[6].value)
-		fields[6].value = word + (word.endsWith("n") ? "" : word.match(/e[lr]?$/) ? "n" : "en");
+	return [
+		lemma,
+		gensg,
+		lemma,
+		lemma,
+		lemma,
+		lemma,
+		datpl,
+		lemma,
+	];
 }
 
-function german_noun_mn_s() {
-	let [fields, word] = get_fields();
+function german_noun_mn_s(lemma) {
+	if (!lemma)
+		return [];
 
-	if (word.match(/[szß]$/))
-		return;	// what should happen for words ending in -s already?
+	if (lemma.match(/[szß]$/))
+		return [];	// what should happen for lemmas ending in -s already?
 
-	fields[1].value = fields[1]?.value || word + "s";
+	let pl = lemma + "s";
 
-	for (const k of [0, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
-
-	for (const k of [4, 5, 6, 7]) {
-		fields[k].value = fields[k]?.value || word + "s";
-	}
+	return [
+		lemma,
+		pl,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		pl,
+		pl,
+	];
 }
 
-function german_noun_mn_umlaut_er() {
-	let [fields, word] = get_fields();
+function german_noun_mn_umlaut_er(lemma) {
+	if (!lemma)
+		return [];
 
-	let pl = word
+	let pl = lemma
 		.replace(/([^aeiouäöü])a([^aeiouäöü]+)$/, "$1ä$2er")
 		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/, "$1ö$2er")
 		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/, "$1ü$2er")
 		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/, "$1äu$2er");
 
-	for (const k of [0, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
+	let datpl = pl + (pl.endsWith("n") ? "" : "n");
 
-	if (word === pl)
-		return; // failed to parse word
+	if (lemma === pl)
+		return []; // failed to parse lemma
 
-	for (const k of [4, 5, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	let gen = [];
+	if (!lemma.endsWith("e"))
+		gen.push(lemma + "es");
+	if (!lemma.match(/[szß]$/))
+		gen.push(lemma + "s");
+	let gensg = gen.join("/");
 
-	if (!fields[1].value) {
-		let gen = [];
-		if (!word.endsWith("e")) gen.push(word + "es");
-		if (!word.match(/[szß]$/)) gen.push(word + "s");
-		fields[1].value = gen.join("/");
-	}
-
-	if (!fields[6].value)
-		fields[6].value = pl + (pl.endsWith("n") ? "" : "n");
+	return [
+		lemma,
+		gensg,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		datpl,
+		pl,
+	];
 }
 
-function german_noun_m_umlaut_e() {
-	let [fields, word] = get_fields();
+function german_noun_m_umlaut_e(lemma) {
+	if (!lemma)
+		return [];
 
-	let pl = word
+	let pl = lemma
 		.replace(/([^aeiouäöü])a([^aeiouäöü]+)$/, "$1ä$2e")
 		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/, "$1ö$2e")
 		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/, "$1ü$2e")
 		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/, "$1äu$2e")
 		.replace(/([^aeiouäöü])(e|ea|i|ie)([^aeiouäöü]+)$/, "$1$2$3e");
 
-	for (const k of [0, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
+	let datpl = pl + (pl.match(/[elr]n$/) ? "" : pl.endsWith("e") ? "n" : "en");
 
-	if (word === pl)
-		return; // failed to parse word
+	if (lemma === pl)
+		return []; // failed to parse lemma
 
-	for (const k of [4, 5, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	let gen = [];
+	if (!lemma.endsWith("e"))
+		gen.push(lemma + "es");
+	if (!lemma.match(/([szß]|zt)$/))
+		gen.push(lemma + "s");
 
-	if (!fields[1].value) {
-		let gen = [];
-		if (!word.endsWith("e")) gen.push(word + "es");
-		if (!word.match(/[szß]$/)) gen.push(word + "s");
-		fields[1].value = gen.join("/");
-	}
+	let gensg = gen.join("/");
 
-	if (!fields[6].value)
-		fields[6].value = pl + (pl.match(/[elr]n$/) ? "" : pl.endsWith("e") ? "n" : "en");
+	return [
+		lemma,
+		gensg,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		datpl,
+		pl,
+	];
 }
 
-function german_noun_n_e() {
-	let [fields, word] = get_fields();
+function german_noun_n_e(lemma) {
+	if (!lemma)
+		return [];
 
-	let pl = word.endsWith("e") ? "" : word + "e";
+	let pl = lemma.endsWith("e") ? "" : lemma + "e";
 
-	if (!fields[1].value) {
-		let gen = [];
-		if (!word.endsWith("e")) gen.push(word + "es");
-		if (!word.match(/[szß]$/)) gen.push(word + "s");
-		fields[1].value = gen.join("/");
-	}
+	let datpl = pl + "n";
 
-	for (const k of [0, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
+	let gen = [];
+	if (!lemma.endsWith("e"))
+		gen.push(lemma + "es");
+	if (!lemma.match(/([szß]|zt)$/))
+		gen.push(lemma + "s");
 
-	for (const k of [4, 5, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	let gensg = gen.join("/");
 
-	fields[6].value = fields[6]?.value || pl + "n";
+	return [
+		lemma,
+		gensg,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		datpl,
+		pl,
+	];
 }
 
-function german_noun_n_um_en() {
-	let [fields, word] = get_fields();
+function german_noun_n_um_en(lemma) {
+	if (!lemma)
+		return [];
 
-	let pl = word.replace(/um$/, "en");
+	let pl = lemma.replace(/um$/, "en");
+	let gensg = lemma + "s";
 
-	fields[1].value = fields[1]?.value || word + "s";
+	if (lemma === pl)
+		return []; // failed to parse lemma
 
-	for (const k of [0, 2, 3]) {
-		fields[k].value = fields[k]?.value || word;
-	}
-
-	if (word === pl)
-		return; // failed to parse word
-
-	for (const k of [4, 5, 6, 7]) {
-		fields[k].value = fields[k]?.value || pl;
-	}
+	return [
+		lemma,
+		gensg,
+		lemma,
+		lemma,
+		pl,
+		pl,
+		pl,
+		pl,
+	];
 }
 
 /***********************************************************************************/
 
-function german_verb() {
-	let [fields, inf] = get_fields();
+function german_verb(lemma) {
+	if (!lemma)
+		return [];
 
+	let inf = lemma;
 	let stem = inf.replace(/e?n$/, "");
 
 	let p2suffix = "st";
@@ -344,86 +346,74 @@ function german_verb() {
 		p3suffix = "et";
 	}
 
-	fields[0].value = fields[0]?.value || inf;
-	fields[1].value = fields[1]?.value || stem + "e";
-	let pres = fields[1].value;
-	fields[2].value = fields[2]?.value || stem + p2suffix;
-	fields[3].value = fields[3]?.value || stem + p3suffix;
-	fields[4].value = fields[4]?.value || inf;
-	fields[5].value = fields[5]?.value || stem + p3suffix;
-	fields[6].value = fields[6]?.value || inf;
+	let pres = stem + "e";
+	let past = stem + (stem.match(/[dt]$/) ? "ete" : "te");
+	let con1 = pres;
+	let con2 = past + (past.endsWith("e") ? "" : "e");
 
-	fields[7].value = fields[7]?.value || stem + (stem.match(/[dt]$/) ? "ete" : "te");
-	let past = fields[7].value;
-	fields[8].value = fields[8]?.value || past +"st";
-	fields[9].value = fields[9]?.value || past;
-	fields[10].value = fields[10]?.value || past + (past.match(/(e[lr]|e)$/) ? "n" : "en");
-	fields[11].value = fields[11]?.value || past + (stem.match(/[dt]$/) ? "et" : "t");
-	fields[12].value = fields[12]?.value || past + (past.match(/(e[lr]|e)$/) ? "n" : "en");
+	let imp = pres;
+	imp = imp.replace(/e$/, "/") + imp;
 
-	fields[13].value = fields[13]?.value || pres;
-	let con1 = fields[13].value;
-	fields[14].value = fields[14]?.value || con1 + "st";
-	fields[15].value = fields[15]?.value || con1;
-	fields[16].value = fields[16]?.value || con1 + "n";
-	fields[17].value = fields[17]?.value || con1 + "t";
-	fields[18].value = fields[18]?.value || con1 + "n";
+	return [
+		inf,
+		"zu " + inf,
+		pres,
+		stem + p2suffix,
+		stem + p3suffix,
+		inf,
+		stem + p3suffix,
+		inf,
 
-	fields[19].value = fields[19]?.value || past + (past.endsWith("e") ? "" : "e");
-	let con2 = fields[19].value;
-	fields[20].value = fields[20]?.value || con2 + "st";
-	fields[21].value = fields[21]?.value || con2;
-	fields[22].value = fields[22]?.value || con2 + "n";
-	fields[23].value = fields[23]?.value || con2 + "t";
-	fields[24].value = fields[24]?.value || con2 + "n";
+		past,
+		past + "st",
+		past,
+		past + (past.match(/(e[lr]|e)$/) ? "n" : "en"),
+		past + (stem.match(/[dt]$/) ? "-et" : "t"),
+		past + (past.match(/(e[lr]|e)$/) ? "n" : "en"),
 
-	fields[25].value = fields[25]?.value || pres.replace(/e$/, "/") + pres;
-	fields[26].value = fields[26]?.value || stem + p3suffix;
+		con1,
+		con1 + "st",
+		con1,
+		con1 + "n",
+		con1 + "t",
+		con1 + "n",
 
-	fields[27].value = fields[27]?.value || (stem.match(/^(be|emp|ent|er|ge|miss|ver|zer)/) ? "" : "ge") + stem + p3suffix;
+		con2,
+		con2 + "st",
+		con2,
+		con2 + "n",
+		con2 + "t",
+		con2 + "n",
+
+		imp,
+		stem + p3suffix,
+
+		inf + "d",
+		(stem.match(/^(be|emp|ent|er|ge|miss|ver|zer)/) ? "" : "ge") + stem + p3suffix,
+	];
+
 	// detect irregular forms and use -en here?
 }
 
 /***********************************************************************************/
 
-if (document.location.pathname.endsWith("/english-adjective/") || document.location.pathname.match("/english-adjective/edit/")) {
-	create_button(english_adjective, "guess forms");
-}
+if (typeof module === "undefined")
+	module = {};
 
-if (document.location.pathname.endsWith("/english-noun/") || document.location.pathname.match("/english-noun/edit/")) {
-	create_button(english_noun, "guess forms");
-}
-
-if (document.location.pathname.endsWith("/esperanto-noun/") || document.location.pathname.match("/esperanto-noun/edit/")) {
-	create_button(esperanto_noun, "generate forms");
-}
-
-if (document.location.pathname.endsWith("/esperanto-verb/") || document.location.pathname.match("/esperanto-verb/edit/")) {
-	create_button(esperanto_verb, "generate forms");
-}
-
-if (document.location.pathname.endsWith("/german-noun-feminine/") || document.location.pathname.match("/german-noun-feminine/edit/")) {
-	create_button(german_noun_f_en, "-en");
-	create_button(german_noun_f_e, "-¨e", "-/-¨e, -e, -er/-¨er, -sal/-sale, -nis/-nisse, -a/-en");
-	create_button(german_noun_f_s, "-s");
-}
-
-if (document.location.pathname.endsWith("/german-noun-masculine/") || document.location.pathname.match("/german-noun-masculine/edit/")) {
-	create_button(german_noun_mn_n, "-s/-n");
-	create_button(german_noun_mn_s, "-s/-s");
-	create_button(german_noun_mn_umlaut_er, "-(e)s-/¨er");
-	create_button(german_noun_m_umlaut_e, "-(e)s/-¨e");
-}
-
-if (document.location.pathname.endsWith("/german-noun-neuter/") || document.location.pathname.match("/german-noun-neuter/edit/")) {
-	create_button(german_noun_mn_umlaut_er, "-(e)s-/¨er")
-	create_button(german_noun_n_e, "-s/-e");
-	create_button(german_noun_mn_s, "-s/-s");
-	create_button(german_noun_mn_n, "-s/-n");
-	create_button(german_noun_n_um_en, "-um/-en");
-}
-
-if (document.location.pathname.endsWith("/german-verb/") || document.location.pathname.match("/german-verb/edit/")) {
-	create_button(german_verb, "guess forms");
-}
+module.exports = {
+	english_adjective,
+	english_noun,
+	esperanto_noun,
+	esperanto_verb,
+	german_noun_f_en,
+	german_noun_f_e,
+	german_noun_f_s,
+	german_noun_mn_n,
+	german_noun_mn_s,
+	german_noun_mn_umlaut_er,
+	german_noun_m_umlaut_e,
+	german_noun_n_e,
+	german_noun_n_um_en,
+	german_verb,
+};
 
