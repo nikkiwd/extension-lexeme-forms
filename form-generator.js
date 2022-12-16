@@ -102,11 +102,15 @@ function german_noun_f_e(lemma) {
 		.replace(/sal$/, "sale")
 		.replace(/nis$/, "nisse")
 
-		.replace(/([^aeiouäöü])a([^aeiouäöü]+)$/, "$1ä$2e")
-		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/, "$1ö$2e")
-		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/, "$1ü$2e")
-		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/, "$1äu$2e")
-		.replace(/([^aeiouäöü](i|ei)[^aeiouäöü]+)$/, "$1e")
+		.replace(/([^aeiouäöü])aa?([^aeiouäöü]+)$/i, "$1ä$2e")
+		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/i, "$1ö$2e")
+		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/i, "$1ü$2e")
+		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/i, "$1äu$2e")
+		.replace(/([^aeiouäöü](ea|ei|eu|i|ie)[^aeiouäöü]+)$/i, "$1e")
+
+		.replace(/^Aa?([^aeiouäöü]+)$/, "Ä$1e")
+		.replace(/^O([^aeiouäöü]+)$/, "Ö$1e")
+		.replace(/^U([^aeiouäöü]+)$/, "Ü$1e")
 
 		.replace(/([^aeiouäöü])a([^aeiouäöü]+er)$/, "$1ä$2")
 		.replace(/([^aeiouäöü])o([^aeiouäöü]+er)$/, "$1ö$2")
@@ -205,10 +209,15 @@ function german_noun_mn_umlaut_er(lemma) {
 		return [];
 
 	let pl = lemma
-		.replace(/([^aeiouäöü])a([^aeiouäöü]+)$/, "$1ä$2er")
-		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/, "$1ö$2er")
-		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/, "$1ü$2er")
-		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/, "$1äu$2er");
+		.replace(/([^aeiouäöü])aa?([^aeiouäöü]+)$/i, "$1ä$2er")
+		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/i, "$1ö$2er")
+		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/i, "$1ü$2er")
+		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/i, "$1äu$2er")
+		.replace(/([^aeiouäöü](ea|ei|eu|i|ie)[^aeiouäöü]+)$/i, "$1er")
+
+		.replace(/^Aa?([^aeiouäöü]+)$/, "Ä$1er")
+		.replace(/^O([^aeiouäöü]+)$/, "Ö$1er")
+		.replace(/^U([^aeiouäöü]+)$/, "Ü$1er");
 
 	let datpl = pl + (pl.endsWith("n") ? "" : "n");
 
@@ -239,11 +248,15 @@ function german_noun_m_umlaut_e(lemma) {
 		return [];
 
 	let pl = lemma
-		.replace(/([^aeiouäöü])a([^aeiouäöü]+)$/, "$1ä$2e")
-		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/, "$1ö$2e")
-		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/, "$1ü$2e")
-		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/, "$1äu$2e")
-		.replace(/([^aeiouäöü])(e|ea|i|ie)([^aeiouäöü]+)$/, "$1$2$3e");
+		.replace(/([^aeiouäöü])aa?([^aeiouäöü]+)$/i, "$1ä$2e")
+		.replace(/([^aeiouäöü])o([^aeiouäöü]+)$/i, "$1ö$2e")
+		.replace(/([^aeiouäöü])u([^aeiouäöü]+)$/i, "$1ü$2e")
+		.replace(/([^aeiouäöü])au([^aeiouäöü]+)$/i, "$1äu$2e")
+		.replace(/([^aeiouäöü])(e|ea|ei|eu|i|ie)([^aeiouäöü]+)$/i, "$1$2$3e")
+
+		.replace(/^Aa?([^aeiouäöü]+)$/, "Ä$1e")
+		.replace(/^O([^aeiouäöü]+)$/, "Ö$1e")
+		.replace(/^U([^aeiouäöü]+)$/, "Ü$1e");
 
 	let datpl = pl + (pl.match(/[elr]n$/) ? "" : pl.endsWith("e") ? "n" : "en");
 
