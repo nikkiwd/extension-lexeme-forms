@@ -112,3 +112,19 @@ if (document.location.pathname.endsWith("/german-verb/") || document.location.pa
 	create_button(german_verb, "guess forms");
 }
 
+if (document.location.pathname.endsWith("/interlingua-noun/") || document.location.pathname.match("/interlingua-noun/edit/")) {
+	create_button(interlingua_noun, "generate forms");
+}
+
+if (document.location.pathname.endsWith("/interlingue-noun/") || document.location.pathname.match("/interlingue-noun/edit/")) {
+	create_button(interlingue_noun, "generate forms");
+}
+
+if (document.location.pathname.endsWith("/ido-noun/") || document.location.pathname.match("/ido-noun/edit/")) {
+	create_button(ido_noun, "generate forms");
+}
+
+if (document.location.pathname.endsWith("/novial-noun/") || document.location.pathname.match("/novial-noun/edit/")) {
+	create_button(novial_noun, "generate forms");
+}
+
