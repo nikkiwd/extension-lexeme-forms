@@ -410,6 +410,68 @@ function german_verb(lemma) {
 
 /***********************************************************************************/
 
+function interlingua_noun(lemma) {
+	if (!lemma)
+		return [];
+
+	if (lemma.endsWith("s"))
+		return []; // What happens when a noun ends in -s?
+
+	return [
+		lemma,
+		lemma + "s",
+	];
+}
+
+/******************************************************************************/
+
+function interlingue_noun(lemma) {
+	if (!lemma)
+		return [];
+
+	if (lemma.endsWith("s"))
+		return []; // What happens when a noun ends in -s?
+
+	return [
+		lemma,
+		lemma + "s",
+	];
+}
+
+/*****************************************************************************/
+
+function ido_noun(lemma) {
+	if (!lemma)
+		return [];
+
+	if (!lemma.endsWith("o"))
+		return []; // Ido nouns should end with -o
+
+	const pl = lemma.replace(/o$/, "i");
+
+	return [
+		lemma,
+		pl,
+	];
+}
+
+/*****************************************************************************/
+
+function novial_noun(lemma) {
+	if (!lemma)
+		return [];
+
+	if (!lemma.endsWith("s"))
+		return []; // What happens when a noun ends in -s?
+
+	return [
+		lemma,
+		lemma + "s",
+	];
+}
+
+/*****************************************************************************/
+
 if (typeof module === "undefined")
 	module = {};
 
@@ -428,5 +490,9 @@ module.exports = {
 	german_noun_n_e,
 	german_noun_n_um_en,
 	german_verb,
+	interlingua_noun,
+	interlingue_noun,
+	ido_noun,
+	novial_noun,
 };
 
