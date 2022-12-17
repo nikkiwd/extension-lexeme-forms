@@ -463,7 +463,7 @@ function novial_noun(lemma) {
 	if (!lemma)
 		return [];
 
-	if (!lemma.endsWith("s"))
+	if (lemma.endsWith("s"))
 		return []; // What happens when a noun ends in -s?
 
 	return [
